@@ -8,6 +8,75 @@ class _FusedModule(torch.nn.Sequential):
     pass
 
 
+class ConvsReLU1d(_FusedModule):
+    r"""This is a sequential container which calls the Conv1d and ReLU modules.
+    During quantization this will be replaced with the corresponding fused module."""
+    def __init__(self, convs, relu):
+        assert (
+            (
+                type_before_parametrizations(convs) == nn.Conv1d
+                or (
+                    type_before_parametrizations(convs) == nn.Sequential
+                    and all(
+                        type_before_parametrizations(conv) == nn.Conv1d
+                        for conv in convs
+                    )
+                )
+            )
+            and type_before_parametrizations(relu) == nn.ReLU
+        ), 'Incorrect types for input modules{}{}'.format(
+            type_before_parametrizations(convs),
+            type_before_parametrizations(relu)
+        )
+        super().__init__(convs, relu)
+
+
+class ConvsReLU2d(_FusedModule):
+    r"""This is a sequential container which calls the Conv2d and ReLU modules.
+    During quantization this will be replaced with the corresponding fused module."""
+    def __init__(self, convs, relu):
+        assert (
+            (
+                type_before_parametrizations(convs) == nn.Conv2d
+                or (
+                    type_before_parametrizations(convs) == nn.Sequential
+                    and all(
+                        type_before_parametrizations(conv) == nn.Conv2d
+                        for conv in convs
+                    )
+                )
+            )
+            and type_before_parametrizations(relu) == nn.ReLU
+        ), 'Incorrect types for input modules{}{}'.format(
+            type_before_parametrizations(convs),
+            type_before_parametrizations(relu)
+        )
+        super().__init__(convs, relu)
+
+
+class ConvsReLU3d(_FusedModule):
+    r"""This is a sequential container which calls the Conv3d and ReLU modules.
+    During quantization this will be replaced with the corresponding fused module."""
+    def __init__(self, convs, relu):
+        assert (
+            (
+                type_before_parametrizations(convs) == nn.Conv3d
+                or (
+                    type_before_parametrizations(convs) == nn.Sequential
+                    and all(
+                        type_before_parametrizations(conv) == nn.Conv3d
+                        for conv in convs
+                    )
+                )
+            )
+            and type_before_parametrizations(relu) == nn.ReLU
+        ), 'Incorrect types for input modules{}{}'.format(
+            type_before_parametrizations(convs),
+            type_before_parametrizations(relu)
+        )
+        super().__init__(convs, relu)
+
+
 class BnConv1d(_FusedModule):
     r"""This is a sequential container which calls the Batch Norm 1d and Conv 1d modules.
     During quantization this will be replaced with the corresponding fused module."""

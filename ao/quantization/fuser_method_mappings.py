@@ -1,7 +1,6 @@
 from typing import Callable, Dict, Optional, Type, Union
 
 from torch import nn
-from torch.nn import intrinsic as nni
 from torch.ao.quantization.fuser_method_mappings import reverse2, reverse3
 from torch.ao.quantization.utils import Pattern
 
@@ -13,6 +12,9 @@ from nn.intrinsic import (
     BnConvReLU2d,
     BnConvReLU3d,
     BnLinear1d,
+    ConvsReLU1d,
+    ConvsReLU2d,
+    ConvsReLU3d,
 )
 from utils import fusion as fusion_utils
 
@@ -108,9 +110,9 @@ def fuse_bn_conv_relu(is_qat, bn, conv, relu):
                 "Cannot fuse train modules: {}".format((bn, conv, relu)))
     else:
         map_to_fused_module_eval = {
-            nn.Conv1d: nni.ConvReLU1d,
-            nn.Conv2d: nni.ConvReLU2d,
-            nn.Conv3d: nni.ConvReLU3d,
+            nn.Conv1d: ConvsReLU1d,
+            nn.Conv2d: ConvsReLU2d,
+            nn.Conv3d: ConvsReLU3d,
         }
         fused_module = map_to_fused_module_eval.get(type(conv), None)
         if fused_module is not None:
